@@ -135,10 +135,14 @@ func (t *TOTP) GetCurrentToken() int32 {
 	return t.get(windowPeriod)
 }
 
+func (t *TOTP) GetTokenByStep(step int) int32 {
+	windowPeriod := (time.Now().Unix() / int64(t.Period)) + int64(step)
+	return t.get(windowPeriod)
+}
+
 func (t *TOTP) Verify(token int32) bool {
 	for s := t.StepsBack * -1; s <= t.StepsForward; s++ {
 		windowPeriod := (time.Now().Unix() / int64(t.Period)) + int64(s)
-		fmt.Println(t.get(windowPeriod))
 		if t.get(windowPeriod) == token {
 			return true
 		}
