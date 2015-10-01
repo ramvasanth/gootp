@@ -187,13 +187,19 @@ func (t *TOTP) getHashAlgorithm() string {
 	return ""
 }
 
+func (t *TOTP) urlEncode(text string) string {
+	text = url.QueryEscape(text)
+	text = strings.Replace(text, "+", " ", -1)
+	return text
+}
+
 func (t *TOTP) QRCodeData() string {
-	label := url.QueryEscape(t.Label)
-	label = strings.Replace(label, "+", " ", -1)
+	label := t.urlEncode(t.Label)
+	issuer := t.urlEncode(t.Issuer)
 	if t.AlgorithmInQRCode {
-		return fmt.Sprintf("otpauth://totp/%v?secret=%v&digits=%v&period=%v&issuer=%v&algorithm=%v", label, t.getSecret(), t.TokenLength, t.Period, t.Issuer, t.getHashAlgorithm())
+		return fmt.Sprintf("otpauth://totp/%v?secret=%v&digits=%v&period=%v&issuer=%v&algorithm=%v", label, t.getSecret(), t.TokenLength, t.Period, issuer, t.getHashAlgorithm())
 	}
-	return fmt.Sprintf("otpauth://totp/%v?secret=%v&digits=%v&period=%v&issuer=%v", label, t.getSecret(), t.TokenLength, t.Period, t.Issuer)
+	return fmt.Sprintf("otpauth://totp/%v?secret=%v&digits=%v&period=%v&issuer=%v", label, t.getSecret(), t.TokenLength, t.Period, issuer)
 }
 
 func (t *TOTP) QRCodeGoogleChartsUrl() string {

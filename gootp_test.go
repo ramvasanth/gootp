@@ -144,3 +144,13 @@ func TestStringToBase32(t *testing.T) {
 	text := "This is plain simple text"
 	assert.Equal(t, StringToBase32(text), "KRUGS4ZANFZSA4DMMFUW4IDTNFWXA3DFEB2GK6DU", "should contain vlaid base32 string")
 }
+
+func TestUrlEncode(t *testing.T) {
+	otpParameter := &OTPParameter{}
+	otpParameter.Secret = "NM2VG3CRIVBVGMLKMFUWIRDEJJUE4STGKVGW4T2SNJVE6MBWHFWTCUCVOZYWQMLPPJJFQMLJIFEEY23IGNDDSYKNKZTFON3VMNXFC4ZQNVCWE2SXKRRUY6DYO5BWQSBXMNGVETD2KZWUWV2XJBGVOULUKRLU2MLV"
+	otpParameter.AlgorithmInQRCode = true
+	totp, _ := NewTOTP(otpParameter)
+	text := "This is ~!@#$%^&*()_+"
+	assert.Equal(t, totp.urlEncode(text), "This is ~%21%40%23%24%25%5E%26%2A%28%29_%2B", "URL should be encoded")
+
+}
