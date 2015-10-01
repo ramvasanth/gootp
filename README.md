@@ -2,12 +2,10 @@
 
 This go packages can be used to implement Google Authenticator's Server Side. This go package supports only **TOTP **for the following algorithm 
 
-SHA1 (default)
-SHA256
-SHA512
+SHA1 (default), SHA256, SHA512
 
 **Example Usage:**
-
+```go
 package main
 
 import (
@@ -52,3 +50,4 @@ func main() {
     fmt.Printf("Past token -1: %d\n", totp.GetTokenByStep(-1))
 
 }
+```
