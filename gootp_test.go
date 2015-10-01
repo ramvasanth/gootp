@@ -1,6 +1,9 @@
 package gootp
 
-import "testing"
+import (
+	"github.com/stretchr/testify/assert"
+	"testing"
+)
 
 func TestSHA1OTP(t *testing.T) {
 	otpParameter := &OTPParameter{}
@@ -18,29 +21,20 @@ func TestSHA1OTP(t *testing.T) {
 	}
 
 	currentToken := totp.GetCurrentToken()
-	if !totp.Verify(currentToken) {
-		t.Error("the current token shoud be verified to true")
-	}
+	assert.True(t, totp.Verify(currentToken), "the current token shoud be verified to true")
 
 	stepBackToken := totp.GetTokenByStep(-1)
-	if !totp.Verify(stepBackToken) {
-		t.Error("allowed step back token shoud be verified to true")
-	}
+
+	assert.True(t, totp.Verify(stepBackToken), "allowed step back token shoud be verified to true")
 
 	stepForwardToken := totp.GetTokenByStep(1)
-	if !totp.Verify(stepForwardToken) {
-		t.Error("allowed step forward token shoud be verified to true")
-	}
+	assert.True(t, totp.Verify(stepForwardToken), "allowed step forward token shoud be verified to true")
 
 	pastToken := totp.GetTokenByStep(-4)
-	if totp.Verify(pastToken) {
-		t.Error("not allowed step back token shoud not be verified to true")
-	}
+	assert.False(t, totp.Verify(pastToken), "not allowed step back token shoud not be verified")
 
 	futureToken := totp.GetTokenByStep(10)
-	if totp.Verify(futureToken) {
-		t.Error("not allowed step future token shoud not be verified to true")
-	}
+	assert.False(t, totp.Verify(futureToken), "not allowed step future token shoud not be verified")
 }
 
 func TestSHA256OTP(t *testing.T) {
@@ -59,29 +53,20 @@ func TestSHA256OTP(t *testing.T) {
 	}
 
 	currentToken := totp.GetCurrentToken()
-	if !totp.Verify(currentToken) {
-		t.Error("the current token shoud be verified to true")
-	}
+	assert.True(t, totp.Verify(currentToken), "the current token shoud be verified to true")
 
 	stepBackToken := totp.GetTokenByStep(-1)
-	if !totp.Verify(stepBackToken) {
-		t.Error("allowed step back token shoud be verified to true")
-	}
+
+	assert.True(t, totp.Verify(stepBackToken), "allowed step back token shoud be verified to true")
 
 	stepForwardToken := totp.GetTokenByStep(1)
-	if !totp.Verify(stepForwardToken) {
-		t.Error("allowed step forward token shoud be verified to true")
-	}
+	assert.True(t, totp.Verify(stepForwardToken), "allowed step forward token shoud be verified to true")
 
 	pastToken := totp.GetTokenByStep(-4)
-	if totp.Verify(pastToken) {
-		t.Error("not allowed step back token shoud not be verified to true")
-	}
+	assert.False(t, totp.Verify(pastToken), "not allowed step back token shoud not be verified")
 
 	futureToken := totp.GetTokenByStep(10)
-	if totp.Verify(futureToken) {
-		t.Error("not allowed step future token shoud not be verified to true")
-	}
+	assert.False(t, totp.Verify(futureToken), "not allowed step future token shoud not be verified")
 }
 
 func TestSHA512OTP(t *testing.T) {
@@ -100,27 +85,18 @@ func TestSHA512OTP(t *testing.T) {
 	}
 
 	currentToken := totp.GetCurrentToken()
-	if !totp.Verify(currentToken) {
-		t.Error("the current token shoud be verified to true")
-	}
+	assert.True(t, totp.Verify(currentToken), "the current token shoud be verified to true")
 
 	stepBackToken := totp.GetTokenByStep(-1)
-	if !totp.Verify(stepBackToken) {
-		t.Error("allowed step back token shoud be verified to true")
-	}
+
+	assert.True(t, totp.Verify(stepBackToken), "allowed step back token shoud be verified to true")
 
 	stepForwardToken := totp.GetTokenByStep(1)
-	if !totp.Verify(stepForwardToken) {
-		t.Error("allowed step forward token shoud be verified to true")
-	}
+	assert.True(t, totp.Verify(stepForwardToken), "allowed step forward token shoud be verified to true")
 
 	pastToken := totp.GetTokenByStep(-4)
-	if totp.Verify(pastToken) {
-		t.Error("not allowed step back token shoud not be verified to true")
-	}
+	assert.False(t, totp.Verify(pastToken), "not allowed step back token shoud not be verified")
 
 	futureToken := totp.GetTokenByStep(10)
-	if totp.Verify(futureToken) {
-		t.Error("not allowed step future token shoud not be verified to true")
-	}
+	assert.False(t, totp.Verify(futureToken), "not allowed step future token shoud not be verified")
 }
