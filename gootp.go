@@ -32,23 +32,25 @@ const (
 )
 
 type TOTP struct {
-	Secret        []byte
-	TokenLength   uint8    `default: 6`
-	Period        uint8    `default: 30`
-	StepsBack     int      `default: 1`
-	StepsForward  int      `default: 1`
-	HashFunction  HashType `default: SHA1`
-	Issuer, Label string
+	Secret            []byte
+	TokenLength       uint8    `default: 6`
+	Period            uint8    `default: 30`
+	StepsBack         int      `default: 1`
+	StepsForward      int      `default: 1`
+	HashFunction      HashType `default: SHA1`
+	Issuer, Label     string
+	AlgorithmInQRCode bool
 }
 
 type OTPParameter struct {
-	Secret        string
-	HashFunction  HashType
-	TokenLength   uint8
-	Period        uint8
-	StepsBack     int
-	StepsForward  int
-	Issuer, Label string
+	Secret            string
+	HashFunction      HashType
+	TokenLength       uint8
+	Period            uint8
+	StepsBack         int
+	StepsForward      int
+	Issuer, Label     string
+	AlgorithmInQRCode bool
 }
 
 func NewTOTP(otpParameter *OTPParameter) (*TOTP, error) {
@@ -58,14 +60,15 @@ func NewTOTP(otpParameter *OTPParameter) (*TOTP, error) {
 	}
 
 	totp := &TOTP{
-		Secret:       key,
-		HashFunction: otpParameter.HashFunction,
-		TokenLength:  otpParameter.TokenLength,
-		Period:       otpParameter.Period,
-		StepsBack:    otpParameter.StepsBack,
-		StepsForward: otpParameter.StepsForward,
-		Issuer:       otpParameter.Issuer,
-		Label:        otpParameter.Label,
+		Secret:            key,
+		HashFunction:      otpParameter.HashFunction,
+		TokenLength:       otpParameter.TokenLength,
+		Period:            otpParameter.Period,
+		StepsBack:         otpParameter.StepsBack,
+		StepsForward:      otpParameter.StepsForward,
+		Issuer:            otpParameter.Issuer,
+		Label:             otpParameter.Label,
+		AlgorithmInQRCode: otpParameter.AlgorithmInQRCode,
 	}
 	totp.setDefault()
 	return totp, nil
@@ -187,11 +190,19 @@ func (t *TOTP) getHashAlgorithm() string {
 func (t *TOTP) QRCodeData() string {
 	label := url.QueryEscape(t.Label)
 	label = strings.Replace(label, "+", " ", -1)
+	if t.AlgorithmInQRCode {
+		return fmt.Sprintf("otpauth://totp/%v?secret=%v&digits=%v&period=%v&issuer=%v&algorithm=%v", label, t.getSecret(), t.TokenLength, t.Period, t.Issuer, t.getHashAlgorithm())
+	}
 	return fmt.Sprintf("otpauth://totp/%v?secret=%v&digits=%v&period=%v&issuer=%v", label, t.getSecret(), t.TokenLength, t.Period, t.Issuer)
 }
 
 func (t *TOTP) QRCodeGoogleChartsUrl() string {
 	return fmt.Sprintf("https://chart.googleapis.com/chart?cht=qr&chs=%vx%v&chl=%v", 200, 200, url.QueryEscape(t.QRCodeData()))
+}
+
+func StringToBase32(text string) string {
+	bytes := []byte(text)
+	return base32.StdEncoding.EncodeToString(bytes)
 }
 
 func GetRandomSecret(size int, encodeToBase32 bool) string {

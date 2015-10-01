@@ -102,7 +102,7 @@ func TestSHA512OTP(t *testing.T) {
 func TestTOTPDefaultConstants(t *testing.T) {
 	assert.Equal(t, DefaultPeriod, 30, "TOTP Default period should be 30")
 	assert.Equal(t, DefaultTokenLength, 6, "TOTP Default Token Length should be 6")
-	assert.Equal(t, DefaultHashAlgorithm, SHA1, "TOTP Default Hash Algorithim should be SHA1")
+	assert.Equal(t, DefaultHashAlgorithm, SHA1, "TOTP Default Hash Algorithm should be SHA1")
 	assert.Equal(t, DefaultStepsForward, 1, "TOTP Default Steps Forward should be 1")
 	assert.Equal(t, DefaultStepsBack, 1, "TOTP Default Steps Back should be 1")
 }
@@ -113,7 +113,7 @@ func TestTOTPsetDeafultValues(t *testing.T) {
 	totp, _ := NewTOTP(otpParameter)
 	assert.Equal(t, totp.Period, uint8(30), "TOTP Default period should be 30")
 	assert.Equal(t, totp.TokenLength, uint8(6), "TOTP Default Token Length should be 6")
-	assert.Equal(t, totp.HashFunction, SHA1, "TOTP Default Hash Algorithim should be SHA1")
+	assert.Equal(t, totp.HashFunction, SHA1, "TOTP Default Hash Algorithm should be SHA1")
 	assert.Equal(t, totp.StepsForward, 1, "TOTP Default Steps Forward should be 1")
 	assert.Equal(t, totp.StepsBack, 1, "TOTP Default Steps Back should be 1")
 }
@@ -131,4 +131,18 @@ func TestTOTPQRCodeData(t *testing.T) {
 	totp, _ := NewTOTP(otpParameter)
 	validQR := "otpauth://totp/?secret=NM2VG3CRIVBVGMLKMFUWIRDEJJUE4STGKVGW4T2SNJVE6MBWHFWTCUCVOZYWQMLPPJJFQMLJIFEEY23IGNDDSYKNKZTFON3VMNXFC4ZQNVCWE2SXKRRUY6DYO5BWQSBXMNGVETD2KZWUWV2XJBGVOULUKRLU2MLV&digits=6&period=30&issuer="
 	assert.Equal(t, totp.QRCodeData(), validQR, "TOTP QR code should be valid")
+}
+
+func TestTOTPQRCodeDataWithAlgorithm(t *testing.T) {
+	otpParameter := &OTPParameter{}
+	otpParameter.Secret = "NM2VG3CRIVBVGMLKMFUWIRDEJJUE4STGKVGW4T2SNJVE6MBWHFWTCUCVOZYWQMLPPJJFQMLJIFEEY23IGNDDSYKNKZTFON3VMNXFC4ZQNVCWE2SXKRRUY6DYO5BWQSBXMNGVETD2KZWUWV2XJBGVOULUKRLU2MLV"
+	otpParameter.AlgorithmInQRCode = true
+	totp, _ := NewTOTP(otpParameter)
+	validQR := "otpauth://totp/?secret=NM2VG3CRIVBVGMLKMFUWIRDEJJUE4STGKVGW4T2SNJVE6MBWHFWTCUCVOZYWQMLPPJJFQMLJIFEEY23IGNDDSYKNKZTFON3VMNXFC4ZQNVCWE2SXKRRUY6DYO5BWQSBXMNGVETD2KZWUWV2XJBGVOULUKRLU2MLV&digits=6&period=30&issuer=&algorithm=sha1"
+	assert.Equal(t, totp.QRCodeData(), validQR, "TOTP QR code should be valid")
+}
+
+func TestStringToBase32(t *testing.T) {
+	text := "This is plain simple text"
+	assert.Equal(t, StringToBase32(text), "KRUGS4ZANFZSA4DMMFUW4IDTNFWXA3DFEB2GK6DU", "should contain vlaid base32 string")
 }
