@@ -1,14 +1,12 @@
 ## GOOTP
 
-This go packages can be used to implemet Google Authenticator's Server Side. This go paackage supports only **TOTP **for the following algorithm 
+This go packages can be used to implement Google Authenticator's Server Side. This go package supports only **TOTP **for the following algorithm 
 
 SHA1 (default)
-
 SHA256
-
 SHA512
 
-Example Usage:
+**Example Usage:**
 
 package main
 
