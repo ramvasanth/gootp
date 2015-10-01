@@ -46,9 +46,8 @@ func TestSHA256OTP(t *testing.T) {
 	otpParameter.Label = "My Name"
 	otpParameter.Issuer = "My Company"
 	totp, err := NewTOTP(otpParameter)
-	if err != nil {
-		t.Error("it should not contain error when creating a new TOTP token")
-	}
+
+	assert.Nil(t, err, "it should not contain error when creating a new TOTP token")
 
 	currentToken := totp.GetCurrentToken()
 	assert.True(t, totp.Verify(currentToken), "the current token shoud be verified to true")
@@ -78,9 +77,8 @@ func TestSHA512OTP(t *testing.T) {
 	otpParameter.Label = "My Name"
 	otpParameter.Issuer = "My Company"
 	totp, err := NewTOTP(otpParameter)
-	if err != nil {
-		t.Error("it should not contain error when creating a new TOTP token")
-	}
+
+	assert.Nil(t, err, "it should not contain error when creating a new TOTP token")
 
 	currentToken := totp.GetCurrentToken()
 	assert.True(t, totp.Verify(currentToken), "the current token shoud be verified to true")
